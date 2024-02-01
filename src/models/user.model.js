@@ -31,11 +31,11 @@ const userSchema=new Schema(
             type: String,
             required: [true, 'Password is required']
         },
-        application:{
+        application:[{
 
             type: Schema.Types.ObjectId,
-            ref: "application"
-        },
+            ref: "Application"
+        }],
         refreshToken:{
             type:String,
         }

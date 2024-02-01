@@ -8,7 +8,7 @@ const applicationSchema = new Schema(
         },
         postedby: {
             type: Schema.Types.ObjectId,
-            ref: "user"
+            ref: "User"
              },
         companyname:{
             type: String,
