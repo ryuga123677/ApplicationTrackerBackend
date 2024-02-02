@@ -3,8 +3,8 @@ import { Application } from "../models/application.model.js";
 import { User } from "../models/user.model.js";
 
 const applicationcreater = asyncHandler(async (req, res) => {
-    const { title, companyname, location, amount, description, skillsrequired, username } = req.body;
-    if (!(title, companyname, location, amount, description, skillsrequired)) {
+    const { title, companyname, location, amount, description, skillsrequired, username,duration,statu } = req.body;
+    if (!(title, companyname, location, amount, description, skillsrequired,duration,statu)) {
         return res.status(404).send({
             message: "Please fill all details"
         })
@@ -16,23 +16,23 @@ const applicationcreater = asyncHandler(async (req, res) => {
         })
 
     }
-    const application = await Application.create({ title, companyname, location, amount, description, skillsrequired });
-    if (!application) {
+    const newapplication = await Application.create({ title, companyname, location, amount, description, skillsrequired,duration,statu });
+    if (!newapplication) {
 
         return res.status(404).send({
             message: "Something went wrong in creating application"
         })
     }
-    user.application=application._id;
-    application.postedby=user._id;
+    user.application.push(newapplication._id);
+    newapplication.postedby=user._id;
     await user.save();
-    await application.save();
+    await newapplication.save();
     return res.status(200).send({
         message: "Application created successfully"
     })
 });
 const applicationmodifier = asyncHandler(async (req, res) => {
-    const { title, companyname, location, amount, description, skillsrequired, id } = req.body;
+    const { title, companyname, location, amount, description,duration,statu, skillsrequired, id } = req.body;
     if (!(title, companyname, location, amount, description, skillsrequired)) {
         res.status(404).send({
             message: "Please fill all details"
@@ -46,7 +46,9 @@ const applicationmodifier = asyncHandler(async (req, res) => {
             location,
             amount,
             description,
-            skillsrequired
+            skillsrequired,
+            duration,
+            statu
 
         },
 
@@ -75,7 +77,7 @@ const applicationlists = asyncHandler(async (req, res) => {
     return res.status(200).send(applications);
 });
 const applicationForDisplay = asyncHandler(async (req, res) => {
-    const { applicationid } = req.body;
+    const  applicationid  = req.query.search;
     const application = await Application.findOne({
         _id: applicationid
     });

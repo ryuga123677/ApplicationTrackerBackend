@@ -22,6 +22,20 @@ const applicationSchema = new Schema(
             type: Number,
             required: true
         },
+        duration:{
+            type:String,
+            required: true
+        },
+        statu:{
+            type: String,
+            required: true
+        },
+        date:{
+            type: Date,
+            default:Date.now,
+        }
+        ,
+        
         description:{
             type: String,
         },
