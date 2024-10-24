@@ -8,7 +8,7 @@ const applicationSchema = new Schema(
         },
         postedby: {
             type: Schema.Types.ObjectId,
-            ref: "User"
+            ref: "Provider"
              },
         companyname:{
             type: String,
@@ -26,7 +26,7 @@ const applicationSchema = new Schema(
             type:String,
             required: true
         },
-        statu:{
+        status:{
             type: String,
             required: true
         },
@@ -43,7 +43,14 @@ const applicationSchema = new Schema(
             type: String,
             required: true
         },
-
+        createdby:{
+            type: Schema.Types.ObjectId,
+            ref: "Provider", 
+        },
+        applicants:[{
+            type: Schema.Types.ObjectId,
+            ref: "Userinfo",
+        }]
 
     }
 );

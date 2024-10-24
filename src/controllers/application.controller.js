@@ -1,22 +1,30 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Application } from "../models/application.model.js";
-import { User } from "../models/user.model.js";
+import { Provider } from "../models/provider.model.js";
 
 const applicationcreater = asyncHandler(async (req, res) => {
-    const { title, companyname, location, amount, description, skillsrequired, username,duration,statu } = req.body;
-    if (!(title, companyname, location, amount, description, skillsrequired,duration,statu)) {
+    const { email,
+        title,
+        location,
+        companyname,
+        amount,
+        description,
+        skillsrequired,
+        duration,
+        status, } = req.body;
+    if (!(email && title && companyname && location && amount && description && skillsrequired && duration && status)) {
         return res.status(404).send({
             message: "Please fill all details"
         })
     }
-    const user = await User.findOne({ username: username });
+    const user = await Provider.findOne({ email: email });
     if (!user) {
         return res.status(404).send({
             message: "User not found"
         })
 
     }
-    const newapplication = await Application.create({ title, companyname, location, amount, description, skillsrequired,duration,statu });
+    const newapplication = await Application.create({ title, companyname, location, amount, description, skillsrequired,duration,status });
     if (!newapplication) {
 
         return res.status(404).send({
@@ -24,7 +32,7 @@ const applicationcreater = asyncHandler(async (req, res) => {
         })
     }
     user.application.push(newapplication._id);
-    newapplication.postedby=user._id;
+    newapplication.createdby=user._id;
     await user.save();
     await newapplication.save();
     return res.status(200).send({
@@ -33,7 +41,7 @@ const applicationcreater = asyncHandler(async (req, res) => {
 });
 const applicationmodifier = asyncHandler(async (req, res) => {
     const { title, companyname, location, amount, description,duration,statu, skillsrequired, id } = req.body;
-    if (!(title, companyname, location, amount, description, skillsrequired)) {
+    if (!(title && companyname && location && amount && description && skillsrequired)) {
         res.status(404).send({
             message: "Please fill all details"
         })
@@ -87,7 +95,7 @@ const applicationForDisplay = asyncHandler(async (req, res) => {
     return res.status(200).send(application);
 });
 const myapplication =asyncHandler(async (req, res) => {
-    const user=await User.findOne({username: req.query.search}).populate('application');
+    const user=await Provider.findOne({username: req.query.search}).populate('application');
     if(!user)
     {
         res.status(404).send({ message: "User not found" });
@@ -98,5 +106,19 @@ const myapplication =asyncHandler(async (req, res) => {
 
 
 });
+const applicantsinfolist=asyncHandler(async(req,res)=>{
+const jobid=req.query.search;
+const job=await Application.findById(jobid).populate('applicants');
 
-export { applicationcreater, applicationmodifier, applicationTobeDeleted,applicationlists,myapplication, applicationForDisplay }
+if(!job)
+    {
+        return res.status(402).send("Application not found");
+    }
+
+console.log("yess",job.applicants);
+return res.status(200).send(job.applicants);
+
+
+});
+
+export { applicationcreater, applicationmodifier, applicationTobeDeleted,applicationlists,myapplication, applicationForDisplay,applicantsinfolist }
