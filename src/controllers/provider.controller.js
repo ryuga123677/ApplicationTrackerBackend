@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Provider } from "../models/provider.model.js";
 import { User } from "../models/user.model.js";
+import jwt from 'jsonwebtoken'
 import uploadCloudinary from "../middlewares/cloudinary.middlewares.js";
 
 
@@ -59,8 +60,22 @@ const loginProvider=asyncHandler(async (req,res) => {
     if (!user) {
        return res.status(400).send({ message: "user not found" });
         
-    }
-    return res.status(200).send({message:"logged in successfully"})
+    }const accessToken = jwt.sign({ email: email}, "access-token-provider", {
+        expiresIn: "30s",
+      });
+      const refreshToken = jwt.sign(
+        { email: email },
+        "refresh-token-provider",
+        { expiresIn: "2m" }
+      );
+    return res.status(200).cookie("accessToken", accessToken, {
+        httpOnly: false,
+        maxAge: 30000, 
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: false,
+        maxAge: 120000, 
+      }).send({message:"logged in successfully"})
 
 
 });
@@ -82,15 +97,20 @@ const enablechat=asyncHandler(async (req,res) => {
 const {provideremail,seekeremail}=req.body;
 console.log(provideremail,  seekeremail);
 const seeker=await User.findOne({email:seekeremail});
+const provider=await Provider.findOne({email:provideremail});
 console.log(seeker);
 if(!seeker)return res.status(404).send("No user found");
+provider.chatenable.push(seekeremail);
 seeker.chatenable.push(provideremail);
+await provider.save();
 await seeker.save();
    return res.status(200).send('success');
 });
 const getemails=asyncHandler(async (req, res) => {
     const email=req.query.search;
-    const user=await Provider.findOne({ email});
+   
+    const user=await Provider.findOne({ email:email});
+    console.log(user);
     return res.status(200).send(user.chatenable);
 })
 const getprofile=asyncHandler(async (req, res) => {
@@ -98,6 +118,51 @@ const getprofile=asyncHandler(async (req, res) => {
     const user=await Provider.findOne({ email});
     return res.status(200).send(user);
 })
+const verifyuserprovider = async (req, res, next) => {
+    const accesstoken = req.cookies.accessToken;
+    if (!accesstoken) {
+      if (renewtokenprovider(req, res)) {
+        return res.status(200).send("success");
+      }
+    } else {
+      jwt.verify(accesstoken, "access-token-provider", (err, decoded) => {
+        if (err) {
+          return res.json("invalid access token");
+        } else {
+          req.email = decoded.email;
+          return res.status(200).send("success");
+        }
+      });
+    }
+  };
+  const renewtokenprovider = (req, res) => {
+    const refreshtoken = req.cookies.refreshToken;
+    
+    if (!refreshtoken) {
+       res.json("no refreshtoken");
+       return false;
+    } else {
+      jwt.verify(refreshtoken, "refresh-token-provider", (err, decoded) => {
+        if (err) {
+           res.json("invalid refresh token");
+           return false;
+        } else {
+          const accessToken = jwt.sign(
+            { email: decoded.email },
+            "access-token-provider",
+            { expiresIn: "30s" }
+          );
+  
+          res.cookie("accessToken", accessToken, {
+            httpOnly: false,
+            maxAge: 30000,
+          });
+        
+        }
+      });
+      return true;
+    }
+  
+  };
 
-
-export { registerProvider,loginProvider,jobsposted,enablechat,getprofile,getemails}
+export { registerProvider,loginProvider,jobsposted,enablechat,getprofile,getemails,verifyuserprovider}
