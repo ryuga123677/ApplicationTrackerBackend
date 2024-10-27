@@ -50,22 +50,22 @@ const loginUser = asyncHandler(async (req, res) => {
     return res.status(400).send({ message: "user not found" });
   }
   const accessToken = jwt.sign({ email: email}, "access-token-seeker", {
-    expiresIn: "30s",
+    expiresIn: "3600s",
   });
   const refreshToken = jwt.sign(
     { email: email },
     "refresh-token-seeker",
-    { expiresIn: "2m" }
+    { expiresIn: "10h" }
   );
   return res
     .status(200)
     .cookie("accessToken", accessToken, {
       httpOnly: false,
-      maxAge: 30000, 
+      maxAge: 3600000, 
     })
     .cookie("refreshToken", refreshToken, {
       httpOnly: false,
-      maxAge: 120000, 
+      maxAge: 36000000, 
     })
     .send({ message: "logged in successfully" });
 });
@@ -122,12 +122,12 @@ const verifyuserseeker = async (req, res, next) => {
           const accessToken = jwt.sign(
             { email: decoded.email },
             "access-token-seeker",
-            { expiresIn: "30s" }
+            { expiresIn: "3600s" }
           );
   
           res.cookie("accessToken", accessToken, {
             httpOnly: false,
-            maxAge: 30000,
+            maxAge: 3600000,
           });
         
         }
