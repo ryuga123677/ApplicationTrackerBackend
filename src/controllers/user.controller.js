@@ -61,12 +61,12 @@ const loginUser = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, {
       httpOnly: false,
-      secure: false,
+      secure: true,
       maxAge: 3600000, 
     })
     .cookie("refreshToken", refreshToken, {
       httpOnly: false,
-      secure: false,
+      secure: true,
       maxAge: 36000000, 
     })
     .send({ message: "logged in successfully" });
@@ -129,7 +129,7 @@ const verifyuserseeker = async (req, res, next) => {
   
           res.cookie("accessToken", accessToken, {
             httpOnly: false,
-            secure: false,
+            secure: true,
             maxAge: 3600000,
           });
         
