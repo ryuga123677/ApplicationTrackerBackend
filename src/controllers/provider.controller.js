@@ -61,23 +61,23 @@ const loginProvider=asyncHandler(async (req,res) => {
        return res.status(400).send({ message: "user not found" });
         
     }const accessToken = jwt.sign({ email: email}, "access-token-provider", {
-        expiresIn: "3600s",
+        expiresIn: "60s",
       });
       const refreshToken = jwt.sign(
         { email: email },
         "refresh-token-provider",
-        { expiresIn: "10h" }
+        { expiresIn: "2m" }
       );
     return res.status(200).cookie("accessToken", accessToken, {
         httpOnly: false,
         secure: true,
-        maxAge: 3600000, 
+        maxAge: 60000, 
         sameSite: 'None' 
       })
       .cookie("refreshToken", refreshToken, {
         httpOnly: false,
         secure: true,
-        maxAge: 36000000, 
+        maxAge: 120000, 
         sameSite: 'None' 
       }).send({message:"logged in successfully"})
 
@@ -154,13 +154,13 @@ const verifyuserprovider = async (req, res, next) => {
           const accessToken = jwt.sign(
             { email: decoded.email },
             "access-token-provider",
-            { expiresIn: "1h" }
+            { expiresIn: "60s" }
           );
   
           res.cookie("accessToken", accessToken, {
             httpOnly: false,
             secure: true,
-            maxAge: 3600000,
+            maxAge: 60000,
             sameSite: 'None' 
           });
         
