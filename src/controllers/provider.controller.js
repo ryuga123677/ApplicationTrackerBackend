@@ -72,11 +72,13 @@ const loginProvider=asyncHandler(async (req,res) => {
         httpOnly: false,
         secure: true,
         maxAge: 3600000, 
+        sameSite: 'None' 
       })
       .cookie("refreshToken", refreshToken, {
         httpOnly: false,
         secure: true,
         maxAge: 36000000, 
+        sameSite: 'None' 
       }).send({message:"logged in successfully"})
 
 
@@ -159,6 +161,7 @@ const verifyuserprovider = async (req, res, next) => {
             httpOnly: false,
             secure: true,
             maxAge: 3600000,
+            sameSite: 'None' 
           });
         
         }
