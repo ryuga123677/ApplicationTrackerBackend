@@ -1,5 +1,5 @@
 import {Router} from "express"
-import {registerUser,loginUser,getemails,getprofile,enablechat,verifyuserseeker} from "../controllers/user.controller.js"
+import {registerUser,loginUser,getemails,getprofile,enablechat,verifyuserseeker,logoutuser} from "../controllers/user.controller.js"
 import uploadphoto from '../middlewares/photomulter.middleware.js';
 
 const router=Router();
@@ -9,4 +9,5 @@ router.route('/isseekerlogin').get(verifyuserseeker);
 router.route('/getprovideremail').get(getemails);
 router.route('/getprofile').get(getprofile);
 router.route('/enablechat').post(enablechat);
+router.route('/logoutuser').get(logoutuser);
 export default router;

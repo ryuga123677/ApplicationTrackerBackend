@@ -60,17 +60,17 @@ const loginUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .cookie("accessToken", accessToken, {
-      httpOnly: false,
+      httpOnly: true,
       secure: true,
       maxAge: 3600000, 
-      sameSite: 'none'
+   
   
     })
     .cookie("refreshToken", refreshToken, {
-      httpOnly: false,
+      httpOnly: true,
       secure: true,
       maxAge: 36000000, 
-      sameSite: 'none'
+    
      
     })
     .send({ message: "logged in successfully" });
@@ -95,6 +95,14 @@ const enablechat = asyncHandler(async (req, res) => {
   provider.chatenable.push(seekeremail);
   await provider.save();
   return res.status(200).send("success");
+});
+const logoutuser=asyncHandler(async (req, res) => {
+  res.cookie('refreshToken', '', { 
+    httpOnly: true,
+    secure: true,
+    expires: new Date(0) 
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 const verifyuserseeker = async (req, res) => {
     const accesstoken = req.cookies.accessToken;
@@ -132,10 +140,10 @@ const verifyuserseeker = async (req, res) => {
           );
   
           res.cookie("accessToken", accessToken, {
-            httpOnly: false,
+            httpOnly: true,
             secure: true,
             maxAge: 3600000,
-       sameSite: 'none'
+    
           });
         
         }
@@ -144,4 +152,4 @@ const verifyuserseeker = async (req, res) => {
     }
   
   };
-export { registerUser, loginUser, getemails, getprofile, enablechat,verifyuserseeker };
+export { registerUser, loginUser, getemails, getprofile, enablechat,verifyuserseeker,logoutuser };

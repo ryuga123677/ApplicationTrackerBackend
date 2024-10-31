@@ -123,6 +123,14 @@ const getprofile=asyncHandler(async (req, res) => {
     const user=await Provider.findOne({ email});
     return res.status(200).send(user);
 })
+const logoutprovider=asyncHandler(async (req, res) => {
+  res.cookie('refreshToken', '', { 
+    httpOnly: true,
+    secure: true,
+    expires: new Date(0) 
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
+});
 const verifyuserprovider = async (req, res) => {
     const accesstoken = req.cookies.accessToken;
     if (!accesstoken) {
@@ -173,4 +181,4 @@ const verifyuserprovider = async (req, res) => {
   };
   
 
-export { registerProvider,loginProvider,jobsposted,enablechat,getprofile,getemails,verifyuserprovider}
+export { registerProvider,loginProvider,jobsposted,enablechat,getprofile,getemails,verifyuserprovider,logoutprovider}
