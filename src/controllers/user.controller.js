@@ -96,7 +96,7 @@ const enablechat = asyncHandler(async (req, res) => {
   await provider.save();
   return res.status(200).send("success");
 });
-const verifyuserseeker = async (req, res, next) => {
+const verifyuserseeker = async (req, res) => {
     const accesstoken = req.cookies.accessToken;
     if (!accesstoken) {
       if (renewtokenseeker(req, res)) {

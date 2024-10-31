@@ -69,13 +69,13 @@ const loginProvider=asyncHandler(async (req,res) => {
         { expiresIn: "10h" }
       );
     return res.status(200).cookie("accessToken", accessToken, {
-        httpOnly: false,
+        httpOnly: true,
         secure: true,
         maxAge: 3600000, 
        
       })
       .cookie("refreshToken", refreshToken, {
-        httpOnly: false,
+        httpOnly: true,
         secure: true,
         maxAge: 36000000, 
       
@@ -123,7 +123,7 @@ const getprofile=asyncHandler(async (req, res) => {
     const user=await Provider.findOne({ email});
     return res.status(200).send(user);
 })
-const verifyuserprovider = async (req, res, next) => {
+const verifyuserprovider = async (req, res) => {
     const accesstoken = req.cookies.accessToken;
     if (!accesstoken) {
       if (renewtokenprovider(req, res)) {
@@ -159,7 +159,7 @@ const verifyuserprovider = async (req, res, next) => {
           );
   
           res.cookie("accessToken", accessToken, {
-            httpOnly: false,
+            httpOnly: true,
             secure: true,
             maxAge: 3600000,
 
