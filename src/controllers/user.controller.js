@@ -101,6 +101,10 @@ const logoutuser=asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
     expires: new Date(0) 
+  }).cookie('accessToken', '', { 
+    httpOnly: true,
+    secure: true,
+    expires: new Date(0) 
   });
   res.status(200).json({ message: 'Logged out successfully' });
 });
