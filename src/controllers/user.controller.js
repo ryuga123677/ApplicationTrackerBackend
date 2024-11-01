@@ -62,7 +62,8 @@ const loginUser = asyncHandler(async (req, res) => {
     .cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
-      maxAge: 3600000, 
+      maxAge: 3600000,
+      sameSite: "None", 
    
   
     })
@@ -70,6 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true,
       maxAge: 36000000, 
+      sameSite: "None",
     
      
     })
@@ -96,16 +98,18 @@ const enablechat = asyncHandler(async (req, res) => {
   await provider.save();
   return res.status(200).send("success");
 });
-const logoutuser=asyncHandler(async (req, res) => {
-  res.cookie('refreshToken', '', { 
+const logoutuser = asyncHandler(async (req, res) => {
+  res.clearCookie('refreshToken', { 
     httpOnly: true,
     secure: true,
-    expires: new Date(0) 
-  }).cookie('accessToken', '', { 
-    httpOnly: true,
-    secure: true,
-    expires: new Date(0) 
+    sameSite: "None",
   });
+  res.clearCookie('accessToken', { 
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  })
+
   res.status(200).json({ message: 'Logged out successfully' });
 });
 const verifyuserseeker = async (req, res) => {
@@ -147,6 +151,7 @@ const verifyuserseeker = async (req, res) => {
             httpOnly: true,
             secure: true,
             maxAge: 3600000,
+            sameSite: "None",
     
           });
         

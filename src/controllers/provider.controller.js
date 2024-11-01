@@ -72,12 +72,14 @@ const loginProvider=asyncHandler(async (req,res) => {
         httpOnly: true,
         secure: true,
         maxAge: 3600000, 
+        sameSite: "None",
        
       })
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
         maxAge: 36000000, 
+        sameSite: "None",
       
       
       }).send({message:"logged in successfully"})
@@ -123,16 +125,18 @@ const getprofile=asyncHandler(async (req, res) => {
     const user=await Provider.findOne({ email});
     return res.status(200).send(user);
 })
-const logoutprovider=asyncHandler(async (req, res) => {
-  res.cookie('refreshToken', '', { 
+const logoutprovider = asyncHandler(async (req, res) => {
+  res.clearCookie('refreshToken', { 
     httpOnly: true,
     secure: true,
-    expires: new Date(0) 
-  }).cookie('accessToken', '', { 
-    httpOnly: true,
-    secure: true,
-    expires: new Date(0) 
+    sameSite: "None",
   });
+  res.clearCookie('accessToken', { 
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
+
   res.status(200).json({ message: 'Logged out successfully' });
 });
 const verifyuserprovider = async (req, res) => {
@@ -174,6 +178,7 @@ const verifyuserprovider = async (req, res) => {
             httpOnly: true,
             secure: true,
             maxAge: 3600000,
+            sameSite: "None",
 
           });
         
