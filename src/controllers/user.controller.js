@@ -114,6 +114,7 @@ const logoutuser = asyncHandler(async (req, res) => {
 });
 const verifyuserseeker = async (req, res) => {
     const accesstoken = req.cookies.accessToken;
+    console.log("access" ,accesstoken);
     if (!accesstoken) {
       if (renewtokenseeker(req, res)) {
         return res.status(200).send("success");
